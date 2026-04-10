@@ -52,6 +52,38 @@ def test_adapter_exposes_search_methods():
     assert hasattr(adapter, "search_dates")
 
 
+def test_dates_cli_requests_round_trip_mode_and_preserves_return_date(monkeypatch):
+    adapter = FliAdapter()
+    captured_cmd = []
+
+    def fake_run_cli(cmd):
+        captured_cmd.extend(cmd)
+        return {
+            "dates": [
+                {
+                    "date": ["2026-06-07", "2026-06-10"],
+                    "price": 199,
+                    "currency": "EUR",
+                }
+            ]
+        }
+
+    monkeypatch.setattr(adapter, "_run_cli", fake_run_cli)
+
+    out = adapter.search_dates(
+        DateQuery(
+            origin="MUC",
+            destination="LIS",
+            start_date="2026-06-01",
+            end_date="2026-06-30",
+            trip_duration=3,
+        )
+    )
+
+    assert "--round" in captured_cmd
+    assert out["date_options"][0]["return_date"] == "2026-06-10"
+
+
 def test_database_initializes_schema(tmp_path):
     db_path = tmp_path / "x.sqlite3"
     conn = init_db(db_path)

@@ -92,6 +92,7 @@ class FliAdapter:
             "dates",
             payload["origin"],
             payload["destination"],
+            "--round",
             "--from",
             payload["start_date"],
             "--to",

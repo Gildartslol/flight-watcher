@@ -1,2 +1,0 @@
-[console_scripts]
-flight-watcher = flight_watcher.cli:app

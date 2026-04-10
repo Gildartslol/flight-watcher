@@ -1,0 +1,40 @@
+watchers:
+  - id: muc-lis-weekend
+    name: "Munich → Lisbon weekend scout"
+    enabled: false
+    origin: MUC
+    destination: LIS
+    search_mode: flexible
+    departure_date: null
+    return_date: null
+    start_date: "2026-05-01"
+    end_date: "2026-08-31"
+    trip_duration: 3
+    weekend_only: true
+    cabin_class: economy
+    max_stops: any
+    max_price: 220
+    sort_goal: best_value
+    notify_if_below_price: 160
+    notify_on_drop_percent: 12
+    notes: "Good for quick weekend breaks"
+
+  - id: muc-jfk-summer
+    name: "Munich → New York summer"
+    enabled: false
+    origin: MUC
+    destination: JFK
+    search_mode: specific
+    departure_date: "2026-07-10"
+    return_date: "2026-07-24"
+    start_date: null
+    end_date: null
+    trip_duration: null
+    weekend_only: false
+    cabin_class: economy
+    max_stops: "1"
+    max_price: 750
+    sort_goal: cheapest
+    notify_if_below_price: 650
+    notify_on_drop_percent: 10
+    notes: "Watch for shoulder-day dips"

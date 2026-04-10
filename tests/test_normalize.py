@@ -48,7 +48,26 @@ def test_normalize_flexible_payload_to_date_option():
     out = normalize_date_results(raw, query)
     assert len(out) == 1
     assert out[0].departure_date == "2026-06-07"
+    assert out[0].return_date is None
     assert out[0].total_price == 99
+
+
+def test_flexible_normalize_does_not_invent_return_date_when_missing():
+    raw = {
+        "date_options": [
+            {
+                "departure_date": "2026-06-14",
+                "total_price": 129,
+                "currency": "EUR",
+                "trip_duration": 4,
+            }
+        ]
+    }
+    query = DateQuery(origin="MUC", destination="LIS", start_date="2026-06-01", end_date="2026-06-30", trip_duration=4)
+    out = normalize_date_results(raw, query)
+    assert len(out) == 1
+    assert out[0].departure_date == "2026-06-14"
+    assert out[0].return_date is None
 
 
 def test_missing_currency_falls_back_to_unknown():

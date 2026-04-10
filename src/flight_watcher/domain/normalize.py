@@ -73,12 +73,6 @@ def normalize_date_results(
         price, currency = _extract_price_and_currency(item)
         dep_date = str(item.get("departure_date") or item.get("date") or "")
         ret_date = item.get("return_date")
-        if ret_date is None and dep_date:
-            try:
-                dep_dt = datetime.fromisoformat(dep_date)
-                ret_date = dep_dt.replace(day=dep_dt.day).date().isoformat()
-            except Exception:
-                ret_date = None
 
         trip_duration = int(item.get("trip_duration") or query.trip_duration)
         fingerprint = build_fingerprint(

@@ -84,6 +84,54 @@ def test_dates_cli_requests_round_trip_mode_and_preserves_return_date(monkeypatc
     assert out["date_options"][0]["return_date"] == "2026-06-10"
 
 
+def test_flights_cli_maps_max_stops_to_fli_enum(monkeypatch):
+    adapter = FliAdapter()
+    captured_cmd = []
+
+    def fake_run_cli(cmd):
+        captured_cmd.extend(cmd)
+        return {"flights": []}
+
+    monkeypatch.setattr(adapter, "_run_cli", fake_run_cli)
+
+    adapter._cli_search_flights(
+        {
+            "origin": "MUC",
+            "destination": "LIS",
+            "departure_date": "2026-06-07",
+            "cabin_class": "economy",
+            "max_stops": "2+",
+        }
+    )
+
+    assert captured_cmd[captured_cmd.index("--stops") + 1] == "TWO_PLUS_STOPS"
+
+
+def test_dates_cli_maps_max_stops_to_fli_enum(monkeypatch):
+    adapter = FliAdapter()
+    captured_cmd = []
+
+    def fake_run_cli(cmd):
+        captured_cmd.extend(cmd)
+        return {"dates": []}
+
+    monkeypatch.setattr(adapter, "_run_cli", fake_run_cli)
+
+    adapter._cli_search_dates(
+        {
+            "origin": "MUC",
+            "destination": "LIS",
+            "start_date": "2026-06-01",
+            "end_date": "2026-06-30",
+            "trip_duration": 3,
+            "cabin_class": "economy",
+            "max_stops": "0",
+        }
+    )
+
+    assert captured_cmd[captured_cmd.index("--stops") + 1] == "NON_STOP"
+
+
 def test_database_initializes_schema(tmp_path):
     db_path = tmp_path / "x.sqlite3"
     conn = init_db(db_path)

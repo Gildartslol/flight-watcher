@@ -61,6 +61,7 @@ class FliAdapter:
             raise ProviderError(f"provider request failed: {exc}") from exc
 
     def _cli_search_flights(self, payload: dict[str, Any]) -> dict[str, Any]:
+        stops = self._to_fli_stops(payload.get("max_stops", "any"))
         cmd = [
             sys.executable,
             "-m",
@@ -76,7 +77,7 @@ class FliAdapter:
             "--class",
             str(payload.get("cabin_class", "economy")).upper(),
             "--stops",
-            str(payload.get("max_stops", "any")).upper(),
+            stops,
         ]
         if payload.get("return_date"):
             cmd.extend(["--return", payload["return_date"]])
@@ -85,6 +86,7 @@ class FliAdapter:
         return {"results": flights}
 
     def _cli_search_dates(self, payload: dict[str, Any]) -> dict[str, Any]:
+        stops = self._to_fli_stops(payload.get("max_stops", "any"))
         cmd = [
             sys.executable,
             "-m",
@@ -106,7 +108,7 @@ class FliAdapter:
             "--class",
             str(payload.get("cabin_class", "economy")).upper(),
             "--stops",
-            str(payload.get("max_stops", "any")).upper(),
+            stops,
         ]
         if payload.get("weekend_only"):
             cmd.extend(["--friday", "--saturday", "--sunday"])
@@ -131,6 +133,16 @@ class FliAdapter:
                 }
             )
         return {"date_options": normalized}
+
+    def _to_fli_stops(self, max_stops: Any) -> str:
+        normalized = str(max_stops).strip().lower()
+        mapping = {
+            "any": "ANY",
+            "0": "NON_STOP",
+            "1": "ONE_STOP",
+            "2+": "TWO_PLUS_STOPS",
+        }
+        return mapping.get(normalized, "ANY")
 
     def _run_cli(self, cmd: list[str]) -> dict[str, Any]:
         result = subprocess.run(cmd, capture_output=True, text=True)

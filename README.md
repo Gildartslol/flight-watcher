@@ -1,6 +1,6 @@
 # Flight Watcher (v1)
 
-Local-first personal flight watcher for Boss. It wraps the `flights` (`fli`) backend behind a local adapter, normalizes results to a stable schema, stores snapshots in SQLite, and emits compact Telegram-friendly digests.
+Local-first personal flight watcher. It wraps the `flights` (`fli`) backend behind a local adapter, normalizes results to a stable schema, stores snapshots in SQLite, and emits compact Telegram-friendly digests.
 
 ## What v1 does
 
